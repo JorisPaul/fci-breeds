@@ -52,10 +52,24 @@ class FciParser(core.Parser):
                 s = el.strip()
                 if not (skip and skip(s)):
                     return urljoin(page['url'], s)
+        
+        def getgroupnr(text):
+            match = re.match(r'.{2}(\d+)\s*-\s*(.*)', text)
+            if match:
+                number = match.group(1).strip()
+                return number
+
+        def get_full_group_name(text):
+            parts = text.split(' ', 2)
+            groupname = parts[2].lstrip('- ').strip()
+            return groupname
 
         item['name'] = text(f'//span[re:match(@id,"ContentPlaceHolder1_Nom{lang}Label","i")]/text()')
-        item['group'] = clean_group(text('//a[@id="ContentPlaceHolder1_GroupeHyperLink"]//text()'))
+        #item['group'] = clean_group(text('//a[@id="ContentPlaceHolder1_GroupeHyperLink"]//text()'))
+        item['group'] = get_full_group_name(text('//a[@id="ContentPlaceHolder1_GroupeHyperLink"]//text()'))
+        item['groupnr'] = getgroupnr(text('//a[@id="ContentPlaceHolder1_GroupeHyperLink"]//text()'))
         item['section'] = text('//span[@id="ContentPlaceHolder1_SectionLabel"]/text()')
+        item['subsection'] = text('//span[@id="ContentPlaceHolder1_SousSectionLabel"]/text()')
         item['country'] = text('//span[@id="ContentPlaceHolder1_PaysOrigineLabel"]/text()')
 
         def stdana(s): return s.startswith('/Nomenclature/Illustrations/STD-ANA-')

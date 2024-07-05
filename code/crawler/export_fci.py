@@ -17,7 +17,7 @@ def export_from(datadir, tofile):
 
     data = sorted(data, key=lambda x: int(x['refid']))
 
-    writer = csv.DictWriter(tofile, ['id','name','group','section','provisional','country','url','image','pdf'])
+    writer = csv.DictWriter(tofile, ['id','name','group','groupnr','section','subsection','provisional','country','url','image','pdf'])
     writer.writeheader()
 
     for entry in data:
